@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>939</width>
-    <height>474</height>
+    <width>587</width>
+    <height>282</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -179,7 +179,7 @@
        <item>
         <widget class="QCheckBox" name="kcfg_nameAbove">
          <property name="text">
-          <string>Name above layout</string>
+          <string>Show layout names in layout grid</string>
          </property>
         </widget>
        </item>
