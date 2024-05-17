@@ -179,7 +179,7 @@
        <item>
         <widget class="QCheckBox" name="kcfg_nameAbove">
          <property name="text">
-          <string>Show layout names in layout grid</string>
+          <string>Name above layout</string>
          </property>
         </widget>
        </item>
