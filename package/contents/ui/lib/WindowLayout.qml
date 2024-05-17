@@ -77,13 +77,13 @@ PlasmaComponents.Button {
     }
 
     function spanCheck(normal, raw, screenSize) {
-	if (raw != undefined) {
-	    let val = Math.min(raw / (screenSize / 12.0), 12.0)
-	    val = Math.round(val);
-	    return val;
-	} else {
-	    return normal;
-	}
+        if (raw != undefined) {
+            let val = Math.min(raw / (screenSize / 12.0), 12.0)
+            val = Math.round(val);
+            return val;
+        } else {
+            return normal;
+        }
     }
 
     SpanGridLayout {
