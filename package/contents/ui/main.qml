@@ -71,6 +71,8 @@ PlasmaCore.Dialog {
         mainDialog.screen = workspace.clientArea(KWin.MaximizeArea, workspace.activeScreen, workspace.currentDesktop);
         var screen = mainDialog.screen
 
+        debug("Showing Exquisite dialog on screen ", workspace.activeScreen, ", desktop ", workspace.currentDesktop, ", size ", screen.height, "x", screen.width);
+
         // We want layoutsRepeater to regenerate all of it's children.
         // To make that happen, we save the model it is using, set the model to
         // undefined, and then restore the model.
@@ -119,6 +121,7 @@ PlasmaCore.Dialog {
     }
 
     function hide() {
+        debug("Hiding Exquisite dialog.");
         focusTimer.running = false;
         mainDialog.visible = false;
         mainDialog.tileShortcuts.clear();
@@ -158,6 +161,7 @@ PlasmaCore.Dialog {
                 disconnectSource(sourceName);
             }
             function exec() {
+                debug("Restarting kwin.");
                 mainDialog.hide();
                 connectSource(`bash ${Qt.resolvedUrl("./").replace(/^(file:\/{2})/,"")}restartKWin.sh`);
             }
@@ -205,6 +209,7 @@ PlasmaCore.Dialog {
                 icon.name: "dialog-close"
                 flat: true
                 onClicked: {
+                    debug("Close button hit.");
                     mainDialog.hide();
                 }
             }
@@ -294,7 +299,10 @@ PlasmaCore.Dialog {
                 mainDialog.doRaise(false);
             }
 
-            Keys.onEscapePressed: mainDialog.hide()
+            Keys.onEscapePressed: {
+                debug("Escape pressed.");
+                mainDialog.hide();
+            }
             Keys.onPressed: {
                 tileShortcuts.forEach((tileFunction, key) => {
                     let shortcutModifier = key[0] ? key[0] : Qt.NoModifier;
@@ -310,8 +318,10 @@ PlasmaCore.Dialog {
             target: workspace
             function onClientActivated(client) {
                 if (!client) return;
-                if (hideOnDesktopClick && workspace.activeClient.desktopWindow)
+                if (hideOnDesktopClick && workspace.activeClient.desktopWindow) {
+                    mainDialog.debug("In onClientActive, hiding due to desktop click.");
                     mainDialog.hide();
+                }
 
                 activeClient = workspace.activeClient;
             }
@@ -357,8 +367,10 @@ PlasmaCore.Dialog {
             "Ctrl+Alt+D",
             function() {
                 if (mainDialog.visible) {
+                    debug("Shortcut triggered while visible.");
                     mainDialog.hide();
                 } else {
+                    debug("Hiding before we show.");
                     mainDialog.hide();
                     options.configChanged();
                     mainDialog.show();

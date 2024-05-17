@@ -41,6 +41,7 @@ PlasmaComponents.Button {
         if (root.main.hideTiledWindowTitlebar) client.noBorder = true;
 
         if (root.main.hideOnFirstTile) {
+            root.main.debug("Hiding in WindowLayout.tileWindow.  hideOnFirstTile:", hideOnFirstTile)
             root.main.hide();
         }
     }
@@ -72,7 +73,10 @@ PlasmaComponents.Button {
                 workspace.activeClient = client;
             }
 
-            if (hideOnFirstTile || hideOnLayoutTiled) main.hide();
+            if (hideOnFirstTile || hideOnLayoutTiled) {
+                root.main.debug("Hiding in WindowLayout.root.onClicked.  hideonFirstTile:", hideOnFirstTile, ", hideOnLayoutTiled:", hideOnLayoutTiled)
+                main.hide();
+            }
         }
     }
 
@@ -128,8 +132,12 @@ PlasmaComponents.Button {
 
                     if (!clickedWindows.includes(windows[index])) clickedWindows.push(windows[index]);
 
-                    if (hideOnFirstTile) main.hide();
+                    if (hideOnFirstTile) {
+                        root.main.debug("Hiding in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideonFirstTile:", hideOnFirstTile)
+                        main.hide();
+                    }
                     if (hideOnLayoutTiled && clickedWindows.length === windows.length) {
+                        root.main.debug("Hiding in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideOnLayoutTiled:", hideOnLayoutTiled)
                         clickedWindows = [];
                         main.hide();
                     }
