@@ -17,6 +17,7 @@ PlasmaCore.Dialog {
     property var activeClient
     property var screen
 
+    property bool debugVar: false
     property int columns: 5
     property int position: 1
     property double tileScale: 1.3
@@ -40,7 +41,14 @@ PlasmaCore.Dialog {
     // So if we detect that we are likely on Wayland, disable it going forward.
     property bool suppressRaise: false
 
+    function debug(...args) {
+        if (debugVar) {
+            console.log(...args)
+        }
+    }
+
     function loadConfig(){
+        debugVar = KWin.readConfig("debug", false);
         columns = KWin.readConfig("columns", 5);
         position = KWin.readConfig("position", 1);
         tileScale = KWin.readConfig("tileScale", 1.3);
