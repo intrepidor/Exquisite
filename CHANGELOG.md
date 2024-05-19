@@ -9,8 +9,10 @@
 - New "Under Mouse Cursor" option added to Exquisite spawn location options
     - This option only works with Plasma releases above 5.27.5
 - New "Hide titlebars of tiled windows" option, disabled by default
-- New "Tile scale" option to adjust the size of Exquisite's window tiles, 1.3 by default
 - New "Gap between tiles" option to adjust the gap between tiled windows and screen edges, 0 by default
+- New "Show layout names" preference with "Above/Below" options to display layout names in the UI (thanks to @zelch on GitHub)
+- Now you can define "rawX" and "rawY" values in layout definitions that allow you to tile windows to specific screen coordinates (thanks to @zelch on GitHub)
+- Now you can define a screen to tile to in layout definitions (thanks to @zelch on GitHub)
 - Completely revamped settings dialog
     - Now with tabs!
 
@@ -28,6 +30,7 @@
 
 - Autotiling now only tiles windows on the current screen and current activity
 - Fix bug where on certain screen sizes and layouts, windows didn't tile properly and caused windows to visually bug
+- Multiple other bugfixes regarding certain preferences (thanks to @zelch on GitHub)
 
 
 # 0.4 Release
