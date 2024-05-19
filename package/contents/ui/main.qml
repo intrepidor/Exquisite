@@ -21,7 +21,8 @@ PlasmaCore.Dialog {
     property int columns: 5
     property int position: 1
     property double tileScale: 1.3
-    property bool nameAbove: false
+    property bool showLayoutNames: false
+    property bool layoutNamesAbove: false
     property bool headerVisible: true
     property bool activeWindowLabelVisible: true
     property bool restartButtonVisible: true
@@ -50,7 +51,8 @@ PlasmaCore.Dialog {
         columns = KWin.readConfig("columns", 5);
         position = KWin.readConfig("position", 1);
         tileScale = KWin.readConfig("tileScale", 1.3);
-        nameAbove = KWin.readConfig("nameAbove", false);
+        showLayoutNames = KWin.readConfig("showLayoutNames", false);
+        layoutNamesAbove = KWin.readConfig("layoutNamesAbove", false);
         headerVisible = KWin.readConfig("showHeader", true);
         activeWindowLabelVisible = KWin.readConfig("showActiveWindowLabel", true);
         restartButtonVisible = KWin.readConfig("showRestartButton", true);
@@ -71,7 +73,7 @@ PlasmaCore.Dialog {
 
         debug("Showing dialog on screen ", workspace.activeScreen, ", desktop ", workspace.currentDesktop, ", size ", screen.height, "x", screen.width);
 
-        // We want layoutsRepeater to regenerate all of it's children.
+        // Refresh layoutsRepeater to regenerate all of it's children.
         // To make that happen, we save the model it is using, set the model to
         // undefined, and then restore the model.
         // It's a hack, but it works.
@@ -231,13 +233,14 @@ PlasmaCore.Dialog {
 
                 ColumnLayout {
                     id: column
+
                     function childHasFocus() {
                         return layout.childHasFocus();
                     }
 
                     PlasmaComponents.Label {
                         id: labelTop
-                        visible: nameAbove
+                        visible: showLayoutNames && layoutNamesAbove
                         text: layoutFile.item.name
                         color: Kirigami.Theme.disabledTextColor
                         width: layout.width
@@ -271,7 +274,7 @@ PlasmaCore.Dialog {
 
                     PlasmaComponents.Label {
                         id: labelBottom
-                        visible: !nameAbove
+                        visible: showLayoutNames && !layoutNamesAbove
                         text: layoutFile.item.name
                         color: Kirigami.Theme.disabledTextColor
                         width: layout.width
