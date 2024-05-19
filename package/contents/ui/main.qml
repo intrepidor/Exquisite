@@ -43,7 +43,7 @@ PlasmaCore.Dialog {
     property bool suppressRaise: false
 
     function debug(...args) {
-        if (debugEnabled) console.log("[Exquisite]: ", ...args);
+        if (debugEnabled) console.log(...args);
     }
 
     function loadConfig(){
@@ -73,10 +73,7 @@ PlasmaCore.Dialog {
 
         debug("Showing dialog on screen ", workspace.activeScreen, ", desktop ", workspace.currentDesktop, ", size ", screen.height, "x", screen.width);
 
-        // Refresh layoutsRepeater to regenerate all of it's children.
-        // To make that happen, we save the model it is using, set the model to
-        // undefined, and then restore the model.
-        // It's a hack, but it works.
+        // HACK: Refresh layoutsRepeater model to regenerate all of it's children
         var model = layoutsRepeater.model;
         layoutsRepeater.model = undefined;
         layoutsRepeater.model = model;
@@ -129,9 +126,8 @@ PlasmaCore.Dialog {
 
     function checkRaise() {
         if (suppressRaise) return;
-        // This is a horrible hack.
-        // But a bug showed that on Wayland, workspace.activeClient is useful, but on X11 that is not the case.
-        // And we want to suppress Raise on Wayland.
+        // HACK: Suppress raise on Wayland
+        // A bug showed that on Wayland, workspace.activeClient is useful, but on X11 that is not the case.
         if (mainDialog.activeClient != undefined && workspace.activeClient != undefined) {
             suppressRaise = true;
         }
@@ -285,7 +281,7 @@ PlasmaCore.Dialog {
             }
         }
 
-        // This item is a "hack" to handle focus related actions
+        // HACK: This item handles focus related actions
         PlasmaComponents.TextField {
             id: focusField
             visible: false

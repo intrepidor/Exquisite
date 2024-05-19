@@ -20,10 +20,10 @@ PlasmaComponents.Button {
     property var clickedWindows: []
 
     function tileWindow(client, window, root) {
-        var screen = screen;
-        if (screen == undefined) { console.log("Screen not defined"); return; }
+        var screen = root.screen;
+        if (screen == undefined) { root.main.debug("Screen not defined"); return; }
         if (!client.normalWindow) return;
-        if (main.rememberWindowGeometries && !main.oldWindowGemoetries.has(client)) main.oldWindowGemoetries.set(client, [client.geometry.width, client.geometry.height]);
+        if (root.main.rememberWindowGeometries && !root.main.oldWindowGemoetries.has(client)) root.main.oldWindowGemoetries.set(client, [client.geometry.width, client.geometry.height]);
 
         let xMult = screen.width / 12.0;
         let yMult = screen.height / 12.0;
@@ -39,11 +39,11 @@ PlasmaComponents.Button {
 
         client.setMaximize(false, false);
         client.geometry = Qt.rect(screen.x + x, screen.y + y, width, height);
-        if (main.hideTiledWindowTitlebar) client.noBorder = true;
+        if (root.main.hideTiledWindowTitlebar) client.noBorder = true;
 
-        if (main.hideOnFirstTile) {
-            main.debug("Hiding dialog in WindowLayout.tileWindow.  hideOnFirstTile:", hideOnFirstTile)
-            main.hide();
+        if (root.main.hideOnFirstTile) {
+            root.main.debug("Hiding dialog in WindowLayout.tileWindow.  hideOnFirstTile:", hideOnFirstTile)
+            root.main.hide();
         }
     }
 
@@ -57,7 +57,7 @@ PlasmaComponents.Button {
     }
 
     onClicked: {
-        main.doRaise(true);
+        root.main.doRaise(true);
 
         if (tileAvailableWindowsOnBackgroundClick) {
             let clientList = [];
@@ -75,20 +75,14 @@ PlasmaComponents.Button {
             }
 
             if (hideOnFirstTile || hideOnLayoutTiled) {
-                main.debug("Hiding dialog in WindowLayout.onClicked.  hideonFirstTile:", hideOnFirstTile, ", hideOnLayoutTiled:", hideOnLayoutTiled)
-                main.hide();
+                root.main.debug("Hiding dialog in WindowLayout.onClicked.  hideonFirstTile:", hideOnFirstTile, ", hideOnLayoutTiled:", hideOnLayoutTiled)
+                root.main.hide();
             }
         }
     }
 
     function spanCheck(normal, raw, screenSize) {
-        if (raw != undefined) {
-            let val = Math.min(raw / (screenSize / 12.0), 12.0)
-            val = Math.round(val);
-            return val;
-        } else {
-            return normal;
-        }
+        return raw != undefined ? Math.round(Math.min(raw / (screenSize / 12.0), 12.0)) : normal;
     }
 
     SpanGridLayout {
@@ -119,28 +113,28 @@ PlasmaComponents.Button {
                         return out;
                     } else return "";
                 }
-                Layout.column: { spanCheck(windows[index].x, windows[index].rawX, screen.width); }
-                Layout.row: { spanCheck(windows[index].y, windows[index].rawY, screen.height); }
-                Layout.rowSpan: { spanCheck(windows[index].width, windows[index].rawWidth, screen.width); }
-                Layout.columnSpan: { spanCheck(windows[index].height, windows[index].rawHeight, screen.height); }
+                Layout.column: spanCheck(windows[index].x, windows[index].rawX, screen.width);
+                Layout.row: spanCheck(windows[index].y, windows[index].rawY, screen.height);
+                Layout.rowSpan: spanCheck(windows[index].width, windows[index].rawWidth, screen.width);
+                Layout.columnSpan: spanCheck(windows[index].height, windows[index].rawHeight, screen.height);
 
                 onClicked: {
-                    main.doRaise(true);
-                    main.requestActivate();
+                    root.main.doRaise(true);
+                    root.main.requestActivate();
                     focusField.forceActiveFocus();
 
-                    tileWindow(main.activeClient, windows[index], root);
+                    tileWindow(root.main.activeClient, windows[index], root);
 
                     if (!clickedWindows.includes(windows[index])) clickedWindows.push(windows[index]);
 
                     if (hideOnFirstTile) {
-                        main.debug("Hiding dialog in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideonFirstTile:", hideOnFirstTile)
-                        main.hide();
+                        root.main.debug("Hiding dialog in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideonFirstTile:", hideOnFirstTile)
+                        root.main.hide();
                     }
                     if (hideOnLayoutTiled && clickedWindows.length === windows.length) {
-                        main.debug("Hiding dialog in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideOnLayoutTiled:", hideOnLayoutTiled)
+                        root.main.debug("Hiding dialog in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideOnLayoutTiled:", hideOnLayoutTiled)
                         clickedWindows = [];
-                        main.hide();
+                        root.main.hide();
                     }
                 }
 
@@ -150,12 +144,12 @@ PlasmaComponents.Button {
                     // Register shortcuts
                     if (window.shortcutKey) {
                         let key = [window.shortcutModifier, window.shortcutKey];
-                        main.tileShortcuts.set(key, function(workspace, window, tileWindow, root) {
+                        root.main.tileShortcuts.set(key, function(workspace, window, tileWindow, root) {
                             return function() {
-                                if (window == undefined || root == undefined || workspace == undefined || main == undefined || main.activeClient == undefined) {
+                                if (window == undefined || root == undefined || workspace == undefined || root.main == undefined || root.main.activeClient == undefined) {
                                     return;
                                 }
-                                tileWindow(main.activeClient, window, root);
+                                tileWindow(root.main.activeClient, window, root);
                             }
                         }(workspace, window, tileWindow, root));
                     }
