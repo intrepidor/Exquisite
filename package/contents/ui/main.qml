@@ -17,6 +17,7 @@ PlasmaCore.Dialog {
     property var activeClient
     property var screen
 
+    property bool debugVar: false
     property int columns: 5
     property int position: 1
     property double tileScale: 1.3
@@ -40,7 +41,14 @@ PlasmaCore.Dialog {
     // So if we detect that we are likely on Wayland, disable it going forward.
     property bool suppressRaise: false
 
+    function debug(...args) {
+        if (debugVar) {
+            console.log(...args)
+        }
+    }
+
     function loadConfig(){
+        debugVar = KWin.readConfig("debug", false);
         columns = KWin.readConfig("columns", 5);
         position = KWin.readConfig("position", 1);
         tileScale = KWin.readConfig("tileScale", 1.3);
@@ -62,6 +70,8 @@ PlasmaCore.Dialog {
         // Get the current screen.
         mainDialog.screen = workspace.clientArea(KWin.MaximizeArea, workspace.activeScreen, workspace.currentDesktop);
         var screen = mainDialog.screen
+
+        debug("Showing Exquisite dialog on screen ", workspace.activeScreen, ", desktop ", workspace.currentDesktop, ", size ", screen.height, "x", screen.width);
 
         // We want layoutsRepeater to regenerate all of it's children.
         // To make that happen, we save the model it is using, set the model to
@@ -111,6 +121,7 @@ PlasmaCore.Dialog {
     }
 
     function hide() {
+        debug("Hiding Exquisite dialog.");
         focusTimer.running = false;
         mainDialog.visible = false;
         mainDialog.tileShortcuts.clear();
@@ -150,6 +161,7 @@ PlasmaCore.Dialog {
                 disconnectSource(sourceName);
             }
             function exec() {
+                debug("Restarting kwin.");
                 mainDialog.hide();
                 connectSource(`bash ${Qt.resolvedUrl("./").replace(/^(file:\/{2})/,"")}restartKWin.sh`);
             }
@@ -197,6 +209,7 @@ PlasmaCore.Dialog {
                 icon.name: "dialog-close"
                 flat: true
                 onClicked: {
+                    debug("Close button hit.");
                     mainDialog.hide();
                 }
             }
@@ -286,7 +299,10 @@ PlasmaCore.Dialog {
                 mainDialog.doRaise(false);
             }
 
-            Keys.onEscapePressed: mainDialog.hide()
+            Keys.onEscapePressed: {
+                debug("Escape pressed.");
+                mainDialog.hide();
+            }
             Keys.onPressed: {
                 tileShortcuts.forEach((tileFunction, key) => {
                     let shortcutModifier = key[0] ? key[0] : Qt.NoModifier;
@@ -302,8 +318,10 @@ PlasmaCore.Dialog {
             target: workspace
             function onClientActivated(client) {
                 if (!client) return;
-                if (hideOnDesktopClick && workspace.activeClient.desktopWindow)
+                if (hideOnDesktopClick && workspace.activeClient.desktopWindow) {
+                    mainDialog.debug("In onClientActive, hiding due to desktop click.");
                     mainDialog.hide();
+                }
 
                 activeClient = workspace.activeClient;
             }
@@ -349,8 +367,10 @@ PlasmaCore.Dialog {
             "Ctrl+Alt+D",
             function() {
                 if (mainDialog.visible) {
+                    debug("Shortcut triggered while visible.");
                     mainDialog.hide();
                 } else {
+                    debug("Hiding before we show.");
                     mainDialog.hide();
                     options.configChanged();
                     mainDialog.show();
