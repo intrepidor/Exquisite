@@ -17,7 +17,7 @@ PlasmaCore.Dialog {
     property var activeClient
     property var screen
 
-    property bool debugVar: false
+    property bool debugEnabled: false
     property int columns: 5
     property int position: 1
     property double tileScale: 1.3
@@ -42,13 +42,11 @@ PlasmaCore.Dialog {
     property bool suppressRaise: false
 
     function debug(...args) {
-        if (debugVar) {
-            console.log(...args)
-        }
+        if (debugEnabled) console.log("[Exquisite]: ", ...args);
     }
 
     function loadConfig(){
-        debugVar = KWin.readConfig("debug", false);
+        debugEnabled = KWin.readConfig("debug", false);
         columns = KWin.readConfig("columns", 5);
         position = KWin.readConfig("position", 1);
         tileScale = KWin.readConfig("tileScale", 1.3);
@@ -71,7 +69,7 @@ PlasmaCore.Dialog {
         mainDialog.screen = workspace.clientArea(KWin.MaximizeArea, workspace.activeScreen, workspace.currentDesktop);
         var screen = mainDialog.screen
 
-        debug("Showing Exquisite dialog on screen ", workspace.activeScreen, ", desktop ", workspace.currentDesktop, ", size ", screen.height, "x", screen.width);
+        debug("Showing dialog on screen ", workspace.activeScreen, ", desktop ", workspace.currentDesktop, ", size ", screen.height, "x", screen.width);
 
         // We want layoutsRepeater to regenerate all of it's children.
         // To make that happen, we save the model it is using, set the model to
@@ -121,16 +119,14 @@ PlasmaCore.Dialog {
     }
 
     function hide() {
-        debug("Hiding Exquisite dialog.");
+        debug("Hiding dialog");
         focusTimer.running = false;
         mainDialog.visible = false;
         mainDialog.tileShortcuts.clear();
     }
 
     function checkRaise() {
-        if (suppressRaise) {
-            return;
-        }
+        if (suppressRaise) return;
         // This is a horrible hack.
         // But a bug showed that on Wayland, workspace.activeClient is useful, but on X11 that is not the case.
         // And we want to suppress Raise on Wayland.
@@ -141,13 +137,9 @@ PlasmaCore.Dialog {
 
     function doRaise(forceActiveFocus) {
         checkRaise();
-        if (!suppressRaise) {
-            mainDialog.raise();
-        }
+        if (!suppressRaise) mainDialog.raise();
         mainDialog.requestActivate();
-        if (forceActiveFocus) {
-            focusField.forceActiveFocus();
-        }
+        if (forceActiveFocus) focusField.forceActiveFocus();
     }
 
     ColumnLayout {
@@ -161,7 +153,7 @@ PlasmaCore.Dialog {
                 disconnectSource(sourceName);
             }
             function exec() {
-                debug("Restarting kwin.");
+                debug("Restarting KWin");
                 mainDialog.hide();
                 connectSource(`bash ${Qt.resolvedUrl("./").replace(/^(file:\/{2})/,"")}restartKWin.sh`);
             }
@@ -209,7 +201,7 @@ PlasmaCore.Dialog {
                 icon.name: "dialog-close"
                 flat: true
                 onClicked: {
-                    debug("Close button hit.");
+                    debug("Close button clicked");
                     mainDialog.hide();
                 }
             }
@@ -300,7 +292,7 @@ PlasmaCore.Dialog {
             }
 
             Keys.onEscapePressed: {
-                debug("Escape pressed.");
+                debug("Escape pressed");
                 mainDialog.hide();
             }
             Keys.onPressed: {
@@ -319,7 +311,7 @@ PlasmaCore.Dialog {
             function onClientActivated(client) {
                 if (!client) return;
                 if (hideOnDesktopClick && workspace.activeClient.desktopWindow) {
-                    mainDialog.debug("In onClientActive, hiding due to desktop click.");
+                    mainDialog.debug("In onClientActive, hiding due to desktop click");
                     mainDialog.hide();
                 }
 
@@ -367,10 +359,10 @@ PlasmaCore.Dialog {
             "Ctrl+Alt+D",
             function() {
                 if (mainDialog.visible) {
-                    debug("Shortcut triggered while visible.");
+                    debug("Shortcut triggered while shown");
                     mainDialog.hide();
                 } else {
-                    debug("Hiding before we show.");
+                    debug("Hiding dialog before showing");
                     mainDialog.hide();
                     options.configChanged();
                     mainDialog.show();

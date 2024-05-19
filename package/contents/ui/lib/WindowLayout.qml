@@ -14,15 +14,16 @@ PlasmaComponents.Button {
     implicitHeight: 90*1.2 * PlasmaCore.Units.devicePixelRatio
 
     property var main
+
     property var windows
     property var screen
     property var clickedWindows: []
 
     function tileWindow(client, window, root) {
-        var screen = root.screen;
-        if (screen == undefined) { console.log("screen not defined"); return; }
+        var screen = screen;
+        if (screen == undefined) { console.log("Screen not defined"); return; }
         if (!client.normalWindow) return;
-        if (root.main.rememberWindowGeometries && !root.main.oldWindowGemoetries.has(client)) root.main.oldWindowGemoetries.set(client, [client.geometry.width, client.geometry.height]);
+        if (main.rememberWindowGeometries && !main.oldWindowGemoetries.has(client)) main.oldWindowGemoetries.set(client, [client.geometry.width, client.geometry.height]);
 
         let xMult = screen.width / 12.0;
         let yMult = screen.height / 12.0;
@@ -38,16 +39,16 @@ PlasmaComponents.Button {
 
         client.setMaximize(false, false);
         client.geometry = Qt.rect(screen.x + x, screen.y + y, width, height);
-        if (root.main.hideTiledWindowTitlebar) client.noBorder = true;
+        if (main.hideTiledWindowTitlebar) client.noBorder = true;
 
-        if (root.main.hideOnFirstTile) {
-            root.main.debug("Hiding in WindowLayout.tileWindow.  hideOnFirstTile:", hideOnFirstTile)
-            root.main.hide();
+        if (main.hideOnFirstTile) {
+            main.debug("Hiding dialog in WindowLayout.tileWindow.  hideOnFirstTile:", hideOnFirstTile)
+            main.hide();
         }
     }
 
     function childHasFocus() {
-        if (root.focus) return true;
+        if (focus) return true;
         for (let i = 0; i < repeater.count; i++) {
             let item = repeater.itemAt(i);
             if (item.focus) return true;
@@ -74,7 +75,7 @@ PlasmaComponents.Button {
             }
 
             if (hideOnFirstTile || hideOnLayoutTiled) {
-                root.main.debug("Hiding in WindowLayout.root.onClicked.  hideonFirstTile:", hideOnFirstTile, ", hideOnLayoutTiled:", hideOnLayoutTiled)
+                main.debug("Hiding dialog in WindowLayout.onClicked.  hideonFirstTile:", hideOnFirstTile, ", hideOnLayoutTiled:", hideOnLayoutTiled)
                 main.hide();
             }
         }
@@ -118,10 +119,10 @@ PlasmaComponents.Button {
                         return out;
                     } else return "";
                 }
-                Layout.column: { root.spanCheck(windows[index].x, windows[index].rawX, screen.width); }
-                Layout.row: { root.spanCheck(windows[index].y, windows[index].rawY, screen.height); }
-                Layout.rowSpan: { root.spanCheck(windows[index].width, windows[index].rawWidth, screen.width); }
-                Layout.columnSpan: { root.spanCheck(windows[index].height, windows[index].rawHeight, screen.height); }
+                Layout.column: { spanCheck(windows[index].x, windows[index].rawX, screen.width); }
+                Layout.row: { spanCheck(windows[index].y, windows[index].rawY, screen.height); }
+                Layout.rowSpan: { spanCheck(windows[index].width, windows[index].rawWidth, screen.width); }
+                Layout.columnSpan: { spanCheck(windows[index].height, windows[index].rawHeight, screen.height); }
 
                 onClicked: {
                     main.doRaise(true);
@@ -133,11 +134,11 @@ PlasmaComponents.Button {
                     if (!clickedWindows.includes(windows[index])) clickedWindows.push(windows[index]);
 
                     if (hideOnFirstTile) {
-                        root.main.debug("Hiding in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideonFirstTile:", hideOnFirstTile)
+                        main.debug("Hiding dialog in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideonFirstTile:", hideOnFirstTile)
                         main.hide();
                     }
                     if (hideOnLayoutTiled && clickedWindows.length === windows.length) {
-                        root.main.debug("Hiding in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideOnLayoutTiled:", hideOnLayoutTiled)
+                        main.debug("Hiding dialog in WindowLayout.SpanGridLayout.Repeater.Button.onClicked.  hideOnLayoutTiled:", hideOnLayoutTiled)
                         clickedWindows = [];
                         main.hide();
                     }
