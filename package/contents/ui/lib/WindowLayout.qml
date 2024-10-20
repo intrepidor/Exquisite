@@ -10,8 +10,8 @@ import "./"
 
 PlasmaComponents.Button {
     id: root
-    implicitWidth: 160*1.2 * PlasmaCore.Units.devicePixelRatio
-    implicitHeight: 90*1.2 * PlasmaCore.Units.devicePixelRatio
+    implicitWidth: 144*1.2 * PlasmaCore.Units.devicePixelRatio
+    implicitHeight: 81*1.2 * PlasmaCore.Units.devicePixelRatio
 
     property var windows
     property var clickedWindows: []
