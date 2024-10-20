@@ -1,4 +1,4 @@
-// Formatted and modified version of:
+// formatted and modified version of:
 // https://stackoverflow.com/questions/61803473/qml-gridlayout-row-and-column-span-understanding
 
 import QtQuick 2.0

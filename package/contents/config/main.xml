@@ -3,11 +3,8 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
-    <kcfgfile/>
+    <kcfgfile name=""/>
     <group name="">
-        <entry name="debug" type="Bool">
-            <default>false</default>
-        </entry>
 
         <entry name="columns" type="Int">
             <default>5</default>
@@ -21,23 +18,11 @@
             <default>true</default>
         </entry>
 
-        <entry name="hideTiledWindowTitlebar" type="Bool">
-            <default>false</default>
-        </entry>
-
-        <entry name="showLayoutNames" type="Bool">
-            <default>false</default>
-        </entry>
-
-        <entry name="layoutNamesAbove" type="Bool">
-            <default>false</default>
-        </entry>
-
-        <entry name="showActiveWindowLabel" type="Bool">
+        <entry name="showRestartButton" type="Bool">
             <default>true</default>
         </entry>
 
-        <entry name="showRestartButton" type="Bool">
+        <entry name="showHelpButton" type="Bool">
             <default>true</default>
         </entry>
 
@@ -53,10 +38,6 @@
             <default>false</default>
         </entry>
 
-        <entry name="tileGap" type="Int">
-            <default>0</default>
-        </entry>
-
         <entry name="rememberWindowGeometries" type="Bool">
             <default>true</default>
         </entry>
@@ -64,5 +45,6 @@
         <entry name="tileAvailableWindowsOnBackgroundClick" type="Bool">
             <default>true</default>
         </entry>
+
     </group>
 </kcfg>
